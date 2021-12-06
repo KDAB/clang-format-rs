@@ -5,12 +5,12 @@
 # SPDX-License-Identifier: MIT OR Apache-2.0
 [package]
 name = "clang-format"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Andrew Hayzen <andrew.hayzen@kdab.com>", "Gerhard de Clercq <gerhard.declercq@kdab.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
 description = "A basic clang-format Rust wrapper"
-repository = "https://github.com/KDAB/cxx-qt/"
+repository = "https://github.com/KDAB/clang-format-rs/"
 readme = "README.md"
 
 [dependencies]
