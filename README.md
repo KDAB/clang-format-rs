@@ -30,12 +30,10 @@ fn main() {
 
 # Tests
 
+The test suite can be executed using the `tests.sh` script.
+
 ```bash
-cargo test --all-targets --all-features --manifest-path Cargo.toml
-cargo test --doc --manifest-path Cargo.toml
-cargo clippy --all-targets --all-features --manifest-path Cargo.toml -- -D warnings
-cargo fmt --manifest-path Cargo.toml -- --check
-reuse lint
+./tests.sh
 ```
 
 # Licensing
