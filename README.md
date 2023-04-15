@@ -10,6 +10,9 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 A basic clang-format Rust wrapper.
 
 This allows for formatting a given input using `clang-format` from the system.
+By default it uses `clang-format` binary but this can be changed by setting the
+`CLANG_FORMAT_BINARY` environment variable, for example,
+`CLANG_FORMAT_BINARY=clang-format-16`
 
 ```rust
 use clang_format::{clang_format, ClangFormatStyle, CLANG_FORMAT_STYLE};

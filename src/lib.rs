@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: MIT OR Apache-2.0
 use once_cell::sync::OnceCell;
+use std::env;
 use std::io::Write;
 use std::process::{Command, Stdio};
 
@@ -66,7 +67,8 @@ fn clang_format_with_style(
     style: &ClangFormatStyle,
 ) -> Result<String, ClangFormatError> {
     // Create and try to spawn the command with the specified style
-    if let Ok(mut child) = Command::new("clang-format")
+    let clang_binary = env::var("CLANG_FORMAT_BINARY").unwrap_or("clang-format".to_string());
+    if let Ok(mut child) = Command::new(clang_binary.as_str())
         .arg(format!("--style={}", style.as_str()))
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
