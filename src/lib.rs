@@ -3,24 +3,10 @@
 // SPDX-FileContributor: Gerhard de Clercq <gerhard.declercq@kdab.com>
 //
 // SPDX-License-Identifier: MIT OR Apache-2.0
-use once_cell::sync::OnceCell;
+
 use std::env;
 use std::io::Write;
 use std::process::{Command, Stdio};
-
-/// The style to use for clang-format, use set to choose your default format
-///
-/// # Example
-///
-/// ```
-/// # use clang_format::{CLANG_FORMAT_STYLE, ClangFormatStyle};
-/// # fn main() {
-/// CLANG_FORMAT_STYLE.set(ClangFormatStyle::Mozilla);
-///
-/// assert_eq!(CLANG_FORMAT_STYLE.get().unwrap(), &ClangFormatStyle::Mozilla);
-/// # }
-/// ```
-pub static CLANG_FORMAT_STYLE: OnceCell<ClangFormatStyle> = OnceCell::new();
 
 /// Describes the style to pass to clang-format
 #[derive(Debug, PartialEq)]
@@ -123,13 +109,13 @@ pub fn clang_format_with_style(
 
 /// Execute clang-format with the given input and collect the output
 ///
+/// Note that this uses `ClangFormatStyle::Default` as the style.
+///
 /// # Example
 ///
 /// ```
-/// # use clang_format::{clang_format, ClangFormatStyle, CLANG_FORMAT_STYLE};
+/// # use clang_format::clang_format;
 /// # fn main() {
-/// CLANG_FORMAT_STYLE.set(ClangFormatStyle::Mozilla);
-///
 /// let input = r#"
 ///     struct Test {
 ///
@@ -137,14 +123,11 @@ pub fn clang_format_with_style(
 /// "#;
 /// let output = clang_format(input);
 /// assert!(output.is_ok());
-/// assert_eq!(output.unwrap(), "\nstruct Test\n{};\n");
+/// assert_eq!(output.unwrap(), "\nstruct Test {};\n");
 /// # }
 /// ```
 pub fn clang_format(input: &str) -> Result<String, ClangFormatError> {
-    // Retrieve the style to use
-    let style = CLANG_FORMAT_STYLE.get_or_init(|| ClangFormatStyle::Default);
-
-    clang_format_with_style(input, style)
+    clang_format_with_style(input, &ClangFormatStyle::Default)
 }
 
 #[cfg(test)]

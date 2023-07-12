@@ -15,17 +15,14 @@ By default it uses `clang-format` binary but this can be changed by setting the
 `CLANG_FORMAT_BINARY=clang-format-16`
 
 ```rust
-use clang_format::{clang_format, ClangFormatStyle, CLANG_FORMAT_STYLE};
+use clang_format::{clang_format_with_style, ClangFormatStyle};
 
 fn main() {
-    CLANG_FORMAT_STYLE.set(ClangFormatStyle::Mozilla);
-
     let input = r#"
         struct Test {
-
         };
     "#;
-    let output = clang_format(input);
+    let output = clang_format_with_style(input, ClangFormatStyle::Mozilla);
     assert!(output.is_ok());
     assert_eq!(output.unwrap(), "\nstruct Test\n{};\n");
 }
