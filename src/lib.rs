@@ -62,7 +62,23 @@ pub enum ClangFormatError {
 }
 
 /// Execute clang-format with the given input, using the given style, and collect the output
-fn clang_format_with_style(
+///
+/// # Example
+///
+/// ```
+/// # use clang_format::{clang_format_with_style, ClangFormatStyle};
+/// # fn main() {
+/// let input = r#"
+///     struct Test {
+///
+///     };
+/// "#;
+/// let output = clang_format_with_style(input, &ClangFormatStyle::Mozilla);
+/// assert!(output.is_ok());
+/// assert_eq!(output.unwrap(), "\nstruct Test\n{};\n");
+/// # }
+/// ```
+pub fn clang_format_with_style(
     input: &str,
     style: &ClangFormatStyle,
 ) -> Result<String, ClangFormatError> {
