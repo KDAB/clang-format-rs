@@ -20,6 +20,10 @@ pub enum ClangFormatStyle {
     Default,
     /// clang-format will try to find the .clang-format file located in the closest parent directory of the current directory.
     File,
+    /// A style complying with the [GNU coding standards](https://www.gnu.org/prep/standards/standards.html)
+    ///
+    /// Since clang-format 11
+    GNU,
     /// A style complying with [Google’s C++ style guide](https://google.github.io/styleguide/cppguide.html)
     Google,
     /// A style complying with the [LLVM coding standards](https://llvm.org/docs/CodingStandards.html)
@@ -58,6 +62,7 @@ impl ClangFormatStyle {
             Self::Default => "{}",
             // Will look in parent directories for a .clang-format file
             Self::File => "file",
+            Self::GNU => "GNU",
             Self::Google => "Google",
             Self::Llvm => "LLVM",
             Self::Mozilla => "Mozilla",
