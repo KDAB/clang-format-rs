@@ -9,15 +9,43 @@ use std::io::Write;
 use std::process::{Command, Stdio};
 
 /// Describes the style to pass to clang-format
+///
+/// This list is created from
+/// <https://clang.llvm.org/docs/ClangFormatStyleOptions.html#basedonstyle>
 #[derive(Debug, PartialEq)]
 pub enum ClangFormatStyle {
+    /// A style complying with [Chromium’s style guide](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/styleguide/styleguide.md)
     Chromium,
+    /// Use the default clang-format style
     Default,
+    /// clang-format will try to find the .clang-format file located in the closest parent directory of the current directory.
     File,
+    /// A style complying with [Google’s C++ style guide](https://google.github.io/styleguide/cppguide.html)
     Google,
+    /// A style complying with the [LLVM coding standards](https://llvm.org/docs/CodingStandards.html)
     Llvm,
+    /// A style complying with [Mozilla’s style guide](https://firefox-source-docs.mozilla.org/code-quality/coding-style/index.html)
     Mozilla,
+    /// A style complying with [WebKit’s style guide](https://www.webkit.org/coding/coding-style.html)
     WebKit,
+    /// Specify a custom input to the `--style` argument of clang-format
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use clang_format::{clang_format_with_style, ClangFormatStyle};
+    /// # fn main() {
+    /// # let input = r#"
+    /// #     struct Test {
+    /// #         bool field;
+    /// #     };
+    /// # "#;
+    /// let style = ClangFormatStyle::Custom("{ BasedOnStyle: Mozilla, IndentWidth: 8 }".to_string());
+    /// # let output = clang_format_with_style(input, &style);
+    /// # assert!(output.is_ok());
+    /// # assert_eq!(output.unwrap(), "\nstruct Test\n{\n        bool field;\n};\n");
+    /// # }
+    /// ```
     Custom(String),
 }
 
