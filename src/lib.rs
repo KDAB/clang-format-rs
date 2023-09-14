@@ -4,6 +4,12 @@
 //
 // SPDX-License-Identifier: MIT OR Apache-2.0
 
+#![deny(missing_docs)]
+
+//! A basic clang-format Rust wrapper.
+//!
+//! This allows for formatting a given input using `clang-format` from the system.
+
 use std::env;
 use std::io::Write;
 use std::process::{Command, Stdio};
@@ -81,10 +87,15 @@ impl ClangFormatStyle {
 /// Describes which error spawning clang-format failed with
 #[derive(Debug)]
 pub enum ClangFormatError {
+    /// Failed to spawn the clang-format process
     SpawnFailure,
+    /// Failed to retrieve the stdin handle
     StdInFailure,
+    /// Failed to write the input to the stdin handle
     StdInWriteFailure,
+    /// Failed to convert the clang-format stdout to UTF-8
     Utf8FormatError,
+    /// Failed to wait for the process to end with output
     WaitFailure,
 }
 
