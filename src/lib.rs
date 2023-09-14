@@ -28,6 +28,10 @@ pub enum ClangFormatStyle {
     Google,
     /// A style complying with the [LLVM coding standards](https://llvm.org/docs/CodingStandards.html)
     Llvm,
+    /// A style complying with [Microsoft’s style guide](https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference)
+    ///
+    /// Since clang-format 9
+    Microsoft,
     /// A style complying with [Mozilla’s style guide](https://firefox-source-docs.mozilla.org/code-quality/coding-style/index.html)
     Mozilla,
     /// A style complying with [WebKit’s style guide](https://www.webkit.org/coding/coding-style.html)
@@ -65,6 +69,7 @@ impl ClangFormatStyle {
             Self::GNU => "GNU",
             Self::Google => "Google",
             Self::Llvm => "LLVM",
+            Self::Microsoft => "Microsoft",
             Self::Mozilla => "Mozilla",
             Self::WebKit => "WebKit",
             // Custom style arguments
