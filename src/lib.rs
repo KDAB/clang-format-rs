@@ -18,6 +18,7 @@ pub enum ClangFormatStyle {
     Llvm,
     Mozilla,
     WebKit,
+    Custom(String),
 }
 
 impl ClangFormatStyle {
@@ -33,6 +34,8 @@ impl ClangFormatStyle {
             Self::Llvm => "LLVM",
             Self::Mozilla => "Mozilla",
             Self::WebKit => "WebKit",
+            // Custom style arguments
+            Self::Custom(custom) => custom.as_str(),
         }
     }
 }
@@ -156,5 +159,43 @@ mod tests {
         let output = clang_format_with_style(input, &ClangFormatStyle::Mozilla);
         assert!(output.is_ok());
         assert_eq!(output.unwrap(), "\nstruct Test\n{};\n");
+    }
+
+    #[test]
+    fn format_custom() {
+        let input = r#"
+            struct Test {
+                bool field;
+            };
+        "#;
+
+        // Test multiple lines and single quotes
+        {
+            let output = clang_format_with_style(
+                input,
+                &ClangFormatStyle::Custom(
+                    "{BasedOnStyle: 'Mozilla',
+                    IndentWidth: 8}"
+                        .to_string(),
+                ),
+            );
+            assert!(output.is_ok());
+            assert_eq!(
+                output.unwrap(),
+                "\nstruct Test\n{\n        bool field;\n};\n"
+            );
+        }
+
+        // Test single line and double quotes
+        {
+            let output = clang_format_with_style(
+                input,
+                &ClangFormatStyle::Custom(
+                    "{ BasedOnStyle: \"Mozilla\", IndentWidth: 4 }".to_string(),
+                ),
+            );
+            assert!(output.is_ok());
+            assert_eq!(output.unwrap(), "\nstruct Test\n{\n    bool field;\n};\n");
+        }
     }
 }
