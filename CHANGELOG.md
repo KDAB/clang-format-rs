@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - It is now possible to specify a custom clang-format style using `ClangFormatStyle::Custom(String)`
+- Support for `GNU` as a clang-format style
 
 ## [0.2.0](https://github.com/KDAB/clang-format-rs/compare/v0.1.3...v0.2.0) - 2023-08-02
 
