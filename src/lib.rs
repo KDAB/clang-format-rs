@@ -22,7 +22,7 @@ pub enum ClangFormatStyle {
 
 impl ClangFormatStyle {
     /// Converts the enum ClangFormatStyle to a string that clang-format expects
-    fn as_str(&self) -> &'static str {
+    fn as_str(&self) -> &str {
         match self {
             Self::Chromium => "Chromium",
             // Will use clang-format default options
