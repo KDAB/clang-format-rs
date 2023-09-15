@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for `GNU` as a clang-format style
 - Support for `Microsoft` as a clang-format style
 
+### Changed
+
+- `ClangFormatStyle` enum is now marked as `non_exhaustive` to allow for more styles in the future
+
 ## [0.2.0](https://github.com/KDAB/clang-format-rs/compare/v0.1.3...v0.2.0) - 2023-08-02
 
 ### Added

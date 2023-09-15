@@ -19,6 +19,7 @@ use std::process::{Command, Stdio};
 /// This list is created from
 /// <https://clang.llvm.org/docs/ClangFormatStyleOptions.html#basedonstyle>
 #[derive(Debug, PartialEq)]
+#[non_exhaustive]
 pub enum ClangFormatStyle {
     /// A style complying with [Chromium’s style guide](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/styleguide/styleguide.md)
     Chromium,
