@@ -13,6 +13,7 @@
 use std::env;
 use std::io::Write;
 use std::process::{Command, Stdio};
+use thiserror::Error;
 
 /// Describes the style to pass to clang-format
 ///
@@ -86,18 +87,17 @@ impl ClangFormatStyle {
 }
 
 /// Describes which error spawning clang-format failed with
-#[derive(Debug)]
-pub enum ClangFormatError {
-    /// Failed to spawn the clang-format process
-    SpawnFailure,
-    /// Failed to retrieve the stdin handle
-    StdInFailure,
-    /// Failed to write the input to the stdin handle
-    StdInWriteFailure,
-    /// Failed to convert the clang-format stdout to UTF-8
-    Utf8FormatError,
-    /// Failed to wait for the process to end with output
-    WaitFailure,
+#[derive(Error, Debug)]
+enum ClangFormatError {
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
+    #[error(transparent)]
+    FromUtf8Error(#[from] std::string::FromUtf8Error),
+    // TODO: use ExitStatusError once it is a stable feature
+    // https://doc.rust-lang.org/stable/std/process/struct.ExitStatusError.html
+    // https://github.com/rust-lang/rust/issues/84908
+    #[error("Clang format process exited with a non-zero status")]
+    NonZeroExitStatus,
 }
 
 /// Execute clang-format with the given input, using the given style, and collect the output
@@ -120,43 +120,32 @@ pub enum ClangFormatError {
 pub fn clang_format_with_style(
     input: &str,
     style: &ClangFormatStyle,
-) -> Result<String, ClangFormatError> {
+) -> Result<String, impl std::error::Error> {
     // Create and try to spawn the command with the specified style
     let clang_binary = env::var("CLANG_FORMAT_BINARY").unwrap_or("clang-format".to_string());
-    if let Ok(mut child) = Command::new(clang_binary.as_str())
+    let mut child = Command::new(clang_binary.as_str())
         .arg(format!("--style={}", style.as_str()))
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
-        .spawn()
-    {
-        // Try to take the stdin pipe
-        if let Some(mut stdin) = child.stdin.take() {
-            // Write the input to the stdin
-            if write!(stdin, "{}", input).is_err() {
-                return Err(ClangFormatError::StdInWriteFailure);
-            }
-        } else {
-            return Err(ClangFormatError::StdInFailure);
-        }
+        .spawn()?;
 
-        // Wait for the output
-        //
-        // Note this cannot be inside the stdin block, as stdin is only closed
-        // when it goes out of scope
-        if let Ok(output) = child.wait_with_output() {
-            // Parse the output into a String
-            //
-            // TODO: do we need to check stderr or exitcode?
-            if let Ok(stdout) = String::from_utf8(output.stdout) {
-                Ok(stdout)
-            } else {
-                Err(ClangFormatError::Utf8FormatError)
-            }
-        } else {
-            Err(ClangFormatError::WaitFailure)
-        }
+    // Write the input to stdin
+    //
+    // Note we place inside a scope to ensure that stdin is closed
+    {
+        let mut stdin = child.stdin.take().expect("no stdin handle");
+        write!(stdin, "{}", input)?;
+    }
+
+    // Wait for the output and parse it
+    let output = child.wait_with_output()?;
+    // TODO: use exit_ok() once it is a stable feature
+    // https://doc.rust-lang.org/stable/std/process/struct.ExitStatus.html#method.exit_ok
+    // https://github.com/rust-lang/rust/issues/84908
+    if output.status.success() {
+        Ok(String::from_utf8(output.stdout)?)
     } else {
-        Err(ClangFormatError::SpawnFailure)
+        Err(ClangFormatError::NonZeroExitStatus)
     }
 }
 
@@ -179,7 +168,7 @@ pub fn clang_format_with_style(
 /// assert_eq!(output.unwrap(), "\nstruct Test {};\n");
 /// # }
 /// ```
-pub fn clang_format(input: &str) -> Result<String, ClangFormatError> {
+pub fn clang_format(input: &str) -> Result<String, impl std::error::Error> {
     clang_format_with_style(input, &ClangFormatStyle::Default)
 }
 

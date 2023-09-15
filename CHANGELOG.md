@@ -24,6 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `ClangFormatStyle` enum is now marked as `non_exhaustive` to allow for more styles in the future
 
+### Removed
+
+- `ClangFormatError` is now private, `thiserror` is used internally, and a `impl Error` is returned
+
 ## [0.2.0](https://github.com/KDAB/clang-format-rs/compare/v0.1.3...v0.2.0) - 2023-08-02
 
 ### Added
