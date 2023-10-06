@@ -13,5 +13,7 @@ description = "A basic clang-format Rust wrapper"
 repository = "https://github.com/KDAB/clang-format-rs/"
 readme = "README.md"
 
+exclude=[".github/", "tests.sh"]
+
 [dependencies]
 thiserror = "1.0"
